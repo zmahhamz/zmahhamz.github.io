@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ธาตุไรหว่า</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .quiz-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .option {
+            display: block;
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .option:hover {
+            background-color: #e2e6ea;
+        }
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .option.wrong {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .next-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: none;
+        }
+        .next-btn:hover {
+            background-color: #0056b3;
+        }
+        .footer {
+            font-size: 14px;
+            color: #6c757d;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="question" id="question">He คือธาตุอะไร?</div>
+        <div class="option" data-answer="false">ไฮโดรเจน</div>
+        <div class="option" data-answer="true">ฮีเลี่ยม</div>
+        <div class="option" data-answer="false">ลิเทียม</div>
+        <div class="option" data-answer="false">เบอริลเลียม</div>
+        <button class="next-btn" id="next-btn">ถัดไป</button>
+    </div>
+    
+    <div class="footer">
+        ผู้สร้าง: นายศิลา เจริญศรีโชติวัฒนา 10ข, นายกันต์ธีร์ มากต 3ข
+    </div>
+
+    <script>
+        const questions = [
+            { question: 'He คือธาตุอะไร?', answers: ['ไฮโดรเจน', 'ฮีเลี่ยม', 'ลิเทียม', 'เบอริลเลียม'], correct: 1 },
+            { question: 'O คือธาตุอะไร?', answers: ['ออกซิเจน', 'ทองแดง', 'นีออน', 'ไนโตรเจน'], correct: 0 },
+            { question: 'Na คือธาตุอะไร?', answers: ['ซิลิกอน', 'แคลเซียม', 'โซเดียม', 'แมกนีเซียม'], correct: 2 },
+            { question: 'C คือธาตุอะไร?', answers: ['คลอรีน', 'คาร์บอน', 'ซีลีเนียม', 'ซัลเฟอร์'], correct: 1 },
+            { question: 'N คือธาตุอะไร?', answers: ['นีออน', 'นิกเกิล', 'ไนโตรเจน', 'นีออน'], correct: 2 },
+            { question: 'F คือธาตุอะไร?', answers: ['ฟลูออรีน', 'ฟอสฟอรัส', 'เฟอโรซีน', 'ฟลูออไรด์'], correct: 0 },
+            { question: 'Al คือธาตุอะไร?', answers: ['แคลเซียม', 'อะลูมิเนียม', 'โซเดียม', 'แมกนีเซียม'], correct: 1 },
+            { question: 'Si คือธาตุอะไร?', answers: ['ซิลิกอน', 'ซัลเฟอร์', 'ซัมมาริเซียม', 'ซัลไฟด์'], correct: 0 },
+            { question: 'P คือธาตุอะไร?', answers: ['โพแทสเซียม', 'ฟอสฟอรัส', 'แพลเลเดียม', 'แพลทินัม'], correct: 1 },
+            { question: 'S คือธาตุอะไร?', answers: ['ซิลิกอน', 'ซัลเฟอร์', 'ซัมมาริเซียม', 'ซัลไฟด์'], correct: 1 },
+            { question: 'Cl คือธาตุอะไร?', answers: ['คลอรีน', 'แคลเซียม', 'โคบอลต์', 'คลอโรฟอร์ม'], correct: 0 },
+            { question: 'K คือธาตุอะไร?', answers: ['ซิลิกอน', 'ซัลเฟอร์', 'โพแทสเซียม', 'โซเดียม'], correct: 2 },
+            { question: 'Ca คือธาตุอะไร?', answers: ['แคลเซียม', 'คาร์บอน', 'คลอรีน', 'คลอไรด์'], correct: 0 },
+            { question: 'Fe คือธาตุอะไร?', answers: ['ฟอสฟอรัส', 'ฟลูออรีน', 'เฟอร์โรซีน', 'เหล็ก'], correct: 3 },
+            { question: 'Ni คือธาตุอะไร?', answers: ['นีออน', 'ไนโตรเจน', 'นิกเกิล', 'นีโอดิเมียม'], correct: 2 },
+            { question: 'Cu คือธาตุอะไร?', answers: ['แคลเซียม', 'คอปเปอร์ (ทองแดง)', 'โคบอลต์', 'คลอรีน'], correct: 1 },
+            { question: 'Zn คือธาตุอะไร?', answers: ['ซิงค์', 'ซิลิกอน', 'ซัลเฟอร์', 'ซีลีเนียม'], correct: 0 },
+            { question: 'Ag คือธาตุอะไร?', answers: ['อาร์กอน', 'ซิลิกอน', 'ซิลเวอร์ (เงิน)', 'แอลกอฮอล์'], correct: 2 },
+            { question: 'I คือธาตุอะไร?', answers: ['ไอโอดีน', 'อินเดียม', 'อิริเดียม', 'อินเดียม'], correct: 0 },
+            { question: 'Au คือธาตุอะไร?', answers: ['ยูเรเนียม', 'ซิลเวอร์', 'แพลเลเดียม', 'โกลด์ (ทองคำ)'], correct: 3 }
+        ];
+
+        let currentQuestion = 0;
+
+        function showQuestion() {
+            const questionEl = document.getElementById('question');
+            const options = document.querySelectorAll('.option');
+
+            questionEl.textContent = questions[currentQuestion].question;
+            options.forEach((option, index) => {
+                option.textContent = questions[currentQuestion].answers[index];
+                option.classList.remove('correct', 'wrong');
+                option.dataset.answer = index == questions[currentQuestion].correct;
+            });
+
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', () => {
+                const isCorrect = option.dataset.answer === 'true';
+                option.classList.add(isCorrect ? 'correct' : 'wrong');
+                document.querySelectorAll('.option').forEach(opt => opt.style.pointerEvents = 'none');
+                document.getElementById('next-btn').style.display = 'block';
+            });
+        });
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                showQuestion();
+                document.querySelectorAll('.option').forEach(opt => opt.style.pointerEvents = 'auto');
+            } else {
+                alert('จบเกมแล้ว! ขอบคุณที่เล่น!');
+                currentQuestion = 0;
+                showQuestion();
+                document.querySelectorAll('.option').forEach(opt => opt.style.pointerEvents = 'auto');
+            }
+        });
+
+        showQuestion();
+    </script>
+</body>
+</html>
